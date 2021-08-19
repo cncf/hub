@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import every from 'lodash/every';
 import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +17,8 @@ import Modal from '../common/Modal';
 import styles from './LogIn.module.css';
 import OAuth from './OAuth';
 import ResetPassword from './ResetPassword';
+
+const usePersistedState = require('use-persisted-state-hook');
 
 interface FormValidation {
   isValid: boolean;
@@ -49,6 +51,18 @@ const LogIn = (props: Props) => {
   const [visibleResetPassword, setVisibleResetPassword] = useState(false);
   const [passcode, setPasscode] = useState<string>('');
   const [isApprovingSession, setIsApprovingSession] = useState<boolean>(false);
+  const [fromOauth, setFromOauth] = usePersistedState('loginFromOauth', false);
+
+  useEffect(() => {
+    if (isLoading.status && props.openLogIn && isLoading.type !== 'log') {
+      setFromOauth(true);
+    }
+  }, [isLoading, props.openLogIn, setFromOauth]);
+
+  if (fromOauth && isLoading.status && props.openLogIn && history.action === 'POP') {
+    setFromOauth(false);
+    window.location.reload();
+  }
 
   const onPasscodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasscode(e.target.value);
@@ -76,6 +90,7 @@ const LogIn = (props: Props) => {
     }
     setVisibleResetPassword(false);
     props.setOpenLogIn(false);
+    setFromOauth(false);
   };
 
   const onLoginError = (err: any) => {

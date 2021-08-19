@@ -8680,7 +8680,7 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-hash@^2.0.1:
+object-hash@^2.0.1, object-hash@^2.0.3:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-2.2.0.tgz#5ad518581eefc443bd763472b8ff2e9c2c0d54a5"
   integrity sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==
@@ -12607,6 +12607,13 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-persisted-state-hook@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/use-persisted-state-hook/-/use-persisted-state-hook-1.0.1.tgz#e8cd9b4688260d2951231d6a6a324a6ff35f67c4"
+  integrity sha512-Y8hK8bptiCFJ+b02lMd9pUJ2T9piFeqgAmHmPmxX/MVmtM66Ht6TwiWsWtS5/JmxpOH+h+JU4m+R9ydegFerjA==
+  dependencies:
+    object-hash "^2.0.3"
 
 use@^3.1.0:
   version "3.1.1"

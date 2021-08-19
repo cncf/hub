@@ -1,12 +1,15 @@
 import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaEnvelope } from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
 
 import Modal from '../common/Modal';
 import CreateAnAccount from './CreateAnAccount';
 import OAuth from './OAuth';
 import styles from './SignUp.module.css';
+
+const usePersistedState = require('use-persisted-state-hook');
 
 interface Loading {
   status: boolean;
@@ -19,12 +22,24 @@ interface Props {
 }
 
 const SignUp = (props: Props) => {
+  const history = useHistory();
   const form = useRef<HTMLFormElement>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [activeSignUp, setActiveSignUp] = useState(false);
   const [successNewAccount, setSuccessNewAccount] = useState(false);
   const [isLoading, setIsLoading] = useState<Loading>({ status: false });
+  const [fromOauth, setFromOauth] = usePersistedState('signUpFromOauth', false);
 
+  useEffect(() => {
+    if (isLoading.status && props.openSignUp && isLoading.type !== 'log') {
+      setFromOauth(true);
+    }
+  }, [isLoading, props.openSignUp, setFromOauth]);
+
+  if (fromOauth && isLoading.status && props.openSignUp && history.action === 'POP') {
+    setFromOauth(false);
+    window.location.reload();
+  }
   // Clean API error when form is focused after validation
   const cleanApiError = () => {
     if (!isNull(apiError)) {
@@ -34,6 +49,7 @@ const SignUp = (props: Props) => {
 
   const onCloseModal = () => {
     props.setOpenSignUp(false);
+    setFromOauth(false);
   };
 
   const submitForm = () => {
