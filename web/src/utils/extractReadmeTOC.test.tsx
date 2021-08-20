@@ -4935,6 +4935,225 @@ const tests = [
       },
     ],
   },
+  {
+    input: {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value:
+                'The Hedvig Distributed Storage Platform is a software-defined, scale-out storage solution. It distributes data simultaneously across multiple locations – from on-premises data centers to the cloud – and scales capacity on-demand by leveraging the storage of commodity x86/ARM servers. The distributed write maximizes availability and protects data from hardware failures ranging from a single disk to an entire site, improving disaster recovery planning.',
+            },
+          ],
+        },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value:
+                'Hedvig provides a CSI Driver for accelerating your journey into the container ecosystem. CSI Driver enables containerized applications to maintain state by dynamically provisioning and consuming Hedvig virtual disks as persistent volumes.',
+            },
+          ],
+        },
+        {
+          type: 'heading',
+          depth: 3,
+          children: [],
+        },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value:
+                'Hedvig Operator deploys the Hedvig Storage Proxy and the Hedvig CSI Driver to manage the life cycle of persistent storage in Kubernetes and Openshift.',
+            },
+          ],
+        },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'Supported Container Orchestrators:',
+            },
+          ],
+        },
+        {
+          type: 'list',
+          ordered: false,
+          start: null,
+          spread: false,
+          children: [
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Kubernetes 1.13 to 1.20',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Red Hat OpenShift 4.1 to 4.7',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'Supported Hedvig Releases:',
+            },
+          ],
+        },
+        {
+          type: 'list',
+          ordered: false,
+          start: null,
+          spread: false,
+          children: [
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Hedvig 4.0',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Hedvig 4.1',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Hedvig 4.2',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'listItem',
+              spread: false,
+              checked: null,
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'Hedvig 4.3',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'Please refer to the ',
+            },
+            {
+              type: 'text',
+              value: 'documentation',
+            },
+            {
+              type: 'text',
+              value: ' for steps to install and use the operator.',
+            },
+          ],
+        },
+      ],
+    },
+    output: [],
+  },
+  {
+    input: {
+      type: 'root',
+      children: [
+        {
+          type: 'heading',
+          depth: 2,
+          children: [],
+        },
+        {
+          type: 'heading',
+          depth: 3,
+          children: [
+            {
+              type: 'text',
+              value: 'Title',
+            },
+          ],
+        },
+      ],
+    },
+    output: [
+      {
+        children: [],
+        depth: 3,
+        value: 'Title',
+      },
+    ],
+  },
 ];
 
 describe('extractReadmeTOC', () => {

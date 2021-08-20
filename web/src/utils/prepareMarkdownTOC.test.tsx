@@ -524,6 +524,78 @@ const tests: Test[] = [
       },
     ],
   },
+  {
+    input: '\n# <img src="/img" />\n## Opt 1\n## Subtitle 1',
+    output: [
+      {
+        depth: 2,
+        value: 'Opt 1',
+        children: [],
+      },
+      {
+        depth: 2,
+        value: 'Subtitle 1',
+        children: [],
+      },
+    ],
+  },
+  {
+    input: '\n# ![alt text](https://github.com/n48.png "Logo Title")\n## Opt 1\n## Subtitle 1',
+    output: [
+      {
+        depth: 2,
+        value: 'Opt 1',
+        children: [],
+      },
+      {
+        depth: 2,
+        value: 'Subtitle 1',
+        children: [],
+      },
+    ],
+  },
+  {
+    input: '\n# [text link](https://duckduckgo.com) \n## Opt 1\n## Subtitle 1',
+    output: [
+      {
+        depth: 1,
+        value: 'text link',
+        children: [
+          {
+            depth: 2,
+            value: 'Opt 1',
+            children: [],
+          },
+          {
+            depth: 2,
+            value: 'Subtitle 1',
+            children: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    input: '\n# ⋅⋅1. Item \n## Opt 1\n## Subtitle 1',
+    output: [
+      {
+        depth: 1,
+        value: '⋅⋅1. Item',
+        children: [
+          {
+            depth: 2,
+            value: 'Opt 1',
+            children: [],
+          },
+          {
+            depth: 2,
+            value: 'Subtitle 1',
+            children: [],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 describe('prepareMarkdownTOC', () => {

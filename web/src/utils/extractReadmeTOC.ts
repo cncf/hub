@@ -38,19 +38,24 @@ export const transformer = (ast: Node) => {
   };
 
   for (let i = 0; i < headings.length; i++) {
-    const heading: TOCEntryItem = {
-      depth: headings[i].depth,
-      value: getNodeValue(headings[i] as Node),
-      children: [],
-    };
-    const parent = findParent(processed, heading);
+    const value = getNodeValue(headings[i] as Node);
 
-    if (!isNull(parent)) {
-      parent.children = parent.children ? [...parent.children, heading] : [heading];
-    } else {
-      entries = [...entries, heading];
+    if (value !== '') {
+      const heading: TOCEntryItem = {
+        depth: headings[i].depth,
+        value: value,
+        children: [],
+      };
+
+      const parent = findParent(processed, heading);
+
+      if (!isNull(parent)) {
+        parent.children = parent.children ? [...parent.children, heading] : [heading];
+      } else {
+        entries = [...entries, heading];
+      }
+      processed = [...processed, heading];
     }
-    processed = [...processed, heading];
   }
 
   return entries;
