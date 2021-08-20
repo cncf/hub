@@ -27,6 +27,8 @@ const SearchPackages = (props: Props) => {
   const [packages, setPackages] = useState<Package[] | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [dropdownTimeout, setDropdownTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [highlightedItem, setHighlightedItem] = useState<number | null>(null);
+
   useOutsideClick([dropdownRef], !isNull(packages), () => setPackages(null));
 
   async function searchPackages(tsQueryWeb: string) {
@@ -53,12 +55,55 @@ const SearchPackages = (props: Props) => {
     }
   }
 
-  const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter' && searchQuery !== '') {
-      event.preventDefault();
-      event.stopPropagation();
-      searchPackages(searchQuery);
-      inputEl.current!.blur();
+  // const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+  //   if (event.key === 'Enter' && searchQuery !== '') {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //     searchPackages(searchQuery);
+  //     inputEl.current!.blur();
+  //   }
+  // };
+
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    switch (e.key) {
+      case 'Escape':
+        cleanSearch();
+        return;
+      case 'ArrowDown':
+        updateHighlightedItem('down');
+        return;
+      case 'ArrowUp':
+        updateHighlightedItem('up');
+        return;
+      case 'Enter':
+        e.preventDefault();
+        if (!isNull(packages) && !isNull(highlightedItem)) {
+          const selectedPkg = packages[highlightedItem];
+          if (selectedPkg && !props.disabledPackages.includes(selectedPkg.packageId)) {
+            saveSelectedPackage(selectedPkg);
+          }
+        }
+        return;
+      default:
+        return;
+    }
+  };
+
+  const updateHighlightedItem = (arrow: 'up' | 'down') => {
+    if (!isNull(packages) && packages.length > 0) {
+      if (!isNull(highlightedItem)) {
+        let newIndex: number = arrow === 'up' ? highlightedItem - 1 : highlightedItem + 1;
+        if (newIndex > packages.length - 1) {
+          newIndex = 0;
+        }
+        if (newIndex < 0) {
+          newIndex = packages.length - 1;
+        }
+        setHighlightedItem(newIndex);
+      } else {
+        const newIndex = arrow === 'up' ? packages.length - 1 : 0;
+        setHighlightedItem(newIndex);
+      }
     }
   };
 
@@ -67,12 +112,14 @@ const SearchPackages = (props: Props) => {
     setSearchQuery('');
     inputEl.current!.value = '';
     props.onSelection(item);
+    setHighlightedItem(null);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     if (packages) {
       setPackages(null);
+      setHighlightedItem(null);
     }
   };
 
@@ -160,7 +207,7 @@ const SearchPackages = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {packages.map((item: Package) => {
+                  {packages.map((item: Package, index: number) => {
                     const isDisabled = props.disabledPackages.includes(item.packageId);
 
                     return (
@@ -169,7 +216,8 @@ const SearchPackages = (props: Props) => {
                         role="button"
                         className={classnames(
                           { [styles.clickableCell]: !isDisabled },
-                          { [styles.disabledCell]: isDisabled }
+                          { [styles.disabledCell]: isDisabled },
+                          { [styles.activeCell]: index === highlightedItem }
                         )}
                         onClick={() => {
                           if (!isDisabled) {
@@ -177,6 +225,8 @@ const SearchPackages = (props: Props) => {
                           }
                         }}
                         key={`search_${item.packageId}`}
+                        onMouseOver={() => setHighlightedItem(index)}
+                        onMouseOut={() => setHighlightedItem(null)}
                       >
                         <td className="align-middle text-center d-none d-sm-table-cell">
                           <RepositoryIcon kind={item.repository.kind} className={`mx-2 ${styles.icon}`} />

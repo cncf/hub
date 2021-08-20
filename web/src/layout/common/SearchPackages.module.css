@@ -56,6 +56,10 @@
   background-color: var(--color-1-2) !important;
 }
 
+.activeCell {
+  background-color: var(--color-black-5);
+}
+
 .fitCell {
   width: 1%;
 }
