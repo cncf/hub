@@ -460,7 +460,7 @@ describe('WebhookForm', () => {
       userEvent.type(urlInput, 'http://url.com');
 
       const input = screen.getByRole('textbox', { name: 'Search packages' });
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);

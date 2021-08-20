@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import isNull from 'lodash/isNull';
-import React, { useRef, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import React, { useEffect, useRef, useState } from 'react';
 
 import API from '../../api';
 import useOutsideClick from '../../hooks/useOutsideClick';
@@ -18,6 +17,8 @@ interface Props {
 }
 
 const DEFAULT_LIMIT = 20;
+const SEARCH_DELAY = 3 * 100; // 300ms
+const MIN_CHARACTERS_SEARCH = 3;
 
 const SearchPackages = (props: Props) => {
   const inputEl = useRef<HTMLInputElement>(null);
@@ -25,6 +26,7 @@ const SearchPackages = (props: Props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [packages, setPackages] = useState<Package[] | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [dropdownTimeout, setDropdownTimeout] = useState<NodeJS.Timeout | null>(null);
   useOutsideClick([dropdownRef], !isNull(packages), () => setPackages(null));
 
   async function searchPackages(tsQueryWeb: string) {
@@ -74,6 +76,38 @@ const SearchPackages = (props: Props) => {
     }
   };
 
+  const cleanTimeout = () => {
+    if (!isNull(dropdownTimeout)) {
+      clearTimeout(dropdownTimeout);
+      setDropdownTimeout(null);
+    }
+  };
+
+  const cleanSearch = () => {
+    setPackages(null);
+    setSearchQuery('');
+  };
+
+  useEffect(() => {
+    const isInputFocused = inputEl.current === document.activeElement;
+    if (searchQuery.length >= MIN_CHARACTERS_SEARCH && isInputFocused) {
+      cleanTimeout();
+      setDropdownTimeout(
+        setTimeout(() => {
+          searchPackages(searchQuery);
+        }, SEARCH_DELAY)
+      );
+    } else {
+      cleanSearch();
+    }
+
+    return () => {
+      if (!isNull(dropdownTimeout)) {
+        clearTimeout(dropdownTimeout);
+      }
+    };
+  }, [searchQuery]); /* eslint-disable-line react-hooks/exhaustive-deps */
+
   return (
     <div className="position-relative">
       <div className="d-flex flex-row">
@@ -98,24 +132,6 @@ const SearchPackages = (props: Props) => {
             </div>
           )}
         </div>
-
-        <button
-          data-testid="searchIconBtn"
-          type="button"
-          className={`btn btn-outline-secondary ml-3 text-center p-0 ${styles.searchBtn}`}
-          disabled={searchQuery === '' || isSearching}
-          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (searchQuery !== '') {
-              searchPackages(searchQuery);
-            }
-          }}
-          aria-label={`Search by ${searchQuery}`}
-          aria-expanded={!isNull(packages)}
-        >
-          <FaSearch />
-        </button>
       </div>
 
       {!isNull(packages) && (

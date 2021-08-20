@@ -39,19 +39,17 @@ describe('SearchPackages', () => {
 
       render(<SearchPackages {...defaultProps} />);
 
-      expect(screen.getByTestId('searchIconBtn')).toBeInTheDocument();
-
       const input = screen.getByRole('textbox', { name: 'Search packages' });
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'ing{enter}');
+      userEvent.type(input, 'ing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
       });
 
-      expect(screen.getAllByRole('button')).toHaveLength(3);
+      expect(screen.getAllByRole('button')).toHaveLength(2);
     });
 
     it('selects package', async () => {
@@ -64,7 +62,7 @@ describe('SearchPackages', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'ing{enter}');
+      userEvent.type(input, 'ing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -86,7 +84,7 @@ describe('SearchPackages', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'ing{enter}');
+      userEvent.type(input, 'ing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -109,7 +107,7 @@ describe('SearchPackages', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'ing{enter}');
+      userEvent.type(input, 'ing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -132,7 +130,7 @@ describe('SearchPackages', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'ing{enter}');
+      userEvent.type(input, 'ing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -140,47 +138,11 @@ describe('SearchPackages', () => {
 
       expect(screen.getAllByTestId('packageItem')).toHaveLength(2);
 
-      userEvent.type(input, '1');
+      userEvent.type(input, '1{enter}');
 
       waitFor(() => {
         expect(screen.getAllByTestId('packageItem')).toHaveLength(0);
       });
-    });
-  });
-
-  describe('searchIconBtn', () => {
-    it('is disabled when input if empty', () => {
-      render(<SearchPackages {...defaultProps} />);
-
-      const btn = screen.getByTestId('searchIconBtn');
-      expect(btn).toBeDisabled();
-    });
-
-    it('works when input is not empty', async () => {
-      const mockSearch = getMockSearch('4');
-      mocked(API).searchPackages.mockResolvedValue(mockSearch);
-
-      render(<SearchPackages {...defaultProps} />);
-
-      const btn = screen.getByTestId('searchIconBtn');
-      expect(btn).toBeDisabled();
-
-      const input = screen.getByRole('textbox', { name: 'Search packages' });
-      expect(input).toBeInTheDocument();
-      expect(input).toHaveValue('');
-
-      userEvent.type(input, 'ing');
-
-      expect(btn).not.toBeDisabled();
-
-      userEvent.click(btn);
-
-      await waitFor(() => {
-        expect(API.searchPackages).toHaveBeenCalledTimes(1);
-        expect(btn).toBeDisabled();
-      });
-
-      expect(btn).not.toBeDisabled();
     });
   });
 });

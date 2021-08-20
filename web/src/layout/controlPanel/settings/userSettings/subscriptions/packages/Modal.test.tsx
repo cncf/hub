@@ -66,7 +66,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -115,7 +115,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -136,7 +136,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -160,7 +160,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
@@ -205,7 +205,7 @@ describe('SubscriptionModal', () => {
       expect(input).toBeInTheDocument();
       expect(input).toHaveValue('');
 
-      userEvent.type(input, 'testing{enter}');
+      userEvent.type(input, 'testing');
 
       await waitFor(() => {
         expect(API.searchPackages).toHaveBeenCalledTimes(1);
