@@ -45,6 +45,7 @@ const SearchRepositories = (props: Props) => {
   const [repositories, setRepositories] = useState<Repository[] | null>(null);
   const [searchName, setSearchName] = useState<string>('');
   const [dropdownTimeout, setDropdownTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [highlightedItem, setHighlightedItem] = useState<number | null>(null);
 
   useOutsideClick([dropdownRef], !isNull(repositories), () => cleanSearch());
 
@@ -81,10 +82,32 @@ const SearchRepositories = (props: Props) => {
     setSearchName('');
     inputEl.current!.value = '';
     props.onSelection(item);
+    setHighlightedItem(null);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchName(e.target.value);
+    setHighlightedItem(null);
+  };
+
+  const checkIfRepoIsDisabled = (item: Repository): boolean => {
+    let isDisabled = false;
+    // Claim ownership feature is not supported for OCI repos
+    if (props.label === 'claim-repo-ownership' && item.url.startsWith(OCI_PREFIX)) {
+      isDisabled = true;
+    } else if (!isUndefined(props.disabledRepositories)) {
+      isDisabled =
+        (!isUndefined(props.disabledRepositories.ids) && props.disabledRepositories.ids.includes(item.repositoryId!)) ||
+        (!isUndefined(props.disabledRepositories.users) &&
+          !isNull(item.userAlias) &&
+          !isUndefined(item.userAlias) &&
+          props.disabledRepositories.users.includes(item.userAlias)) ||
+        (!isUndefined(props.disabledRepositories.organizations) &&
+          !isNull(item.organizationName) &&
+          !isUndefined(item.organizationName) &&
+          props.disabledRepositories.organizations.includes(item.organizationName));
+    }
+    return isDisabled;
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -92,11 +115,41 @@ const SearchRepositories = (props: Props) => {
       case 'Escape':
         cleanSearch();
         return;
+      case 'ArrowDown':
+        updateHighlightedItem('down');
+        return;
+      case 'ArrowUp':
+        updateHighlightedItem('up');
+        return;
       case 'Enter':
         e.preventDefault();
+        if (!isNull(repositories) && !isNull(highlightedItem)) {
+          const selectedRepo = repositories[highlightedItem];
+          if (selectedRepo && !checkIfRepoIsDisabled(selectedRepo)) {
+            saveSelectedRepository(selectedRepo);
+          }
+        }
         return;
       default:
         return;
+    }
+  };
+
+  const updateHighlightedItem = (arrow: 'up' | 'down') => {
+    if (!isNull(repositories) && repositories.length > 0) {
+      if (!isNull(highlightedItem)) {
+        let newIndex: number = arrow === 'up' ? highlightedItem - 1 : highlightedItem + 1;
+        if (newIndex > repositories.length - 1) {
+          newIndex = 0;
+        }
+        if (newIndex < 0) {
+          newIndex = repositories.length - 1;
+        }
+        setHighlightedItem(newIndex);
+      } else {
+        const newIndex = arrow === 'up' ? repositories.length - 1 : 0;
+        setHighlightedItem(newIndex);
+      }
     }
   };
 
@@ -116,6 +169,7 @@ const SearchRepositories = (props: Props) => {
   const cleanSearch = () => {
     setRepositories(null);
     setSearchName('');
+    setHighlightedItem(null);
   };
 
   useEffect(() => {
@@ -201,24 +255,8 @@ const SearchRepositories = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {repositories.map((item: Repository) => {
-                    let isDisabled = false;
-                    // Claim ownership feature is not supported for OCI repos
-                    if (props.label === 'claim-repo-ownership' && item.url.startsWith(OCI_PREFIX)) {
-                      isDisabled = true;
-                    } else if (!isUndefined(props.disabledRepositories)) {
-                      isDisabled =
-                        (!isUndefined(props.disabledRepositories.ids) &&
-                          props.disabledRepositories.ids.includes(item.repositoryId!)) ||
-                        (!isUndefined(props.disabledRepositories.users) &&
-                          !isNull(item.userAlias) &&
-                          !isUndefined(item.userAlias) &&
-                          props.disabledRepositories.users.includes(item.userAlias)) ||
-                        (!isUndefined(props.disabledRepositories.organizations) &&
-                          !isNull(item.organizationName) &&
-                          !isUndefined(item.organizationName) &&
-                          props.disabledRepositories.organizations.includes(item.organizationName));
-                    }
+                  {repositories.map((item: Repository, index: number) => {
+                    const isDisabled = checkIfRepoIsDisabled(item);
 
                     return (
                       <tr
@@ -226,7 +264,8 @@ const SearchRepositories = (props: Props) => {
                         role="button"
                         className={classnames(
                           { [styles.clickableCell]: !isDisabled },
-                          { [styles.disabledCell]: isDisabled }
+                          { [styles.disabledCell]: isDisabled },
+                          { [styles.activeCell]: index === highlightedItem }
                         )}
                         onClick={() => {
                           if (!isDisabled) {
@@ -234,6 +273,8 @@ const SearchRepositories = (props: Props) => {
                           }
                         }}
                         key={`repo_${item.name!}`}
+                        onMouseOver={() => setHighlightedItem(index)}
+                        onMouseOut={() => setHighlightedItem(null)}
                       >
                         <td className="align-middle text-center d-none d-sm-table-cell">
                           <div className="mx-2">

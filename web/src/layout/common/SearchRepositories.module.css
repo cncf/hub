@@ -58,6 +58,10 @@
   background-color: var(--color-1-2);
 }
 
+.activeCell {
+  background-color: var(--color-black-5);
+}
+
 .disabledCell:hover {
   background-color: var(--color-1-2) !important;
 }
