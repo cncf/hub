@@ -62,6 +62,8 @@ hub:
     image:
       repository: artifacthub/hub
     resources: {}
+    livenessProbe: {}
+    readinessProbe: {}
   server:
     allowPrivateRepositories: false
     cacheDir: ""

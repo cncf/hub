@@ -217,9 +217,21 @@
                             "type": "object",
                             "default": {},
                             "$ref": "https://kubernetesjsonschema.dev/v1.14.0/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements"
+                        },
+                        "livenessProbe": {
+                            "title": "Hub pod livenessProbe defintion",
+                            "type": "object",
+                            "default": {},
+                            "$ref": "https://kubernetesjsonschema.dev/v1.14.0/_definitions.json#/definitions/io.k8s.api.core.v1.Probe"
+                        },
+                        "readinessProbe": {
+                            "title": "Hub pod readinessProbe defintion",
+                            "type": "object",
+                            "default": {},
+                            "$ref": "https://kubernetesjsonschema.dev/v1.14.0/_definitions.json#/definitions/io.k8s.api.core.v1.Probe"
                         }
                     },
-                    "required": ["image", "replicaCount", "resources"]
+                    "required": ["image", "replicaCount", "resources", "livenessProbe", "readinessProbe"]
                 },
                 "ingress": {
                     "type": "object",
