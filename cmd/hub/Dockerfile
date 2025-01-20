@@ -1,5 +1,5 @@
 # Build backend
-FROM golang:1.23.4-alpine3.21 AS backend-builder
+FROM golang:1.23.5-alpine3.21 AS backend-builder
 WORKDIR /go/src/github.com/artifacthub/hub
 COPY go.* ./
 COPY cmd/hub cmd/hub
